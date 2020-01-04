@@ -20,6 +20,10 @@ parameters:
   value: "tt.testing"
 - name: BUILD_ID
   required: false
+- name: REMOTE_LIBVIRT_SVC_IP
+  value: 172.30.211.152
+- name: REMOTE_LIBVIRT_HOSTNAME
+  value: "ocponz"
 
 objects:
 
@@ -337,7 +341,7 @@ objects:
           replicas: ${workers}
         platform:
           libvirt:
-            URI: qemu+tcp://${REMOTE_LIBVIRT_URI}/system
+            URI: qemu+tcp://${REMOTE_LIBVIRT_HOSTNAME}/system
         pullSecret: >
           ${PULL_SECRET}
         sshKey: |
@@ -542,8 +546,9 @@ objects:
           sleep 60 & wait
         done
     hostAliases:
-    - ip: 172.30.211.152
+    - ip: "${REMOTE_LIBVIRT_SVC_IP}"
       hostnames:
+      - "${REMOTE_LIBVIRT_HOSTNAME}"
       - "alertmanager-main-openshift-monitoring.apps.${NAMESPACE}-${JOB_NAME_HASH}.${BASE_DOMAIN}"
       - "api.${NAMESPACE}-${JOB_NAME_HASH}.${BASE_DOMAIN}"
       - "console-openshift-console.apps.${NAMESPACE}-${JOB_NAME_HASH}.${BASE_DOMAIN}"
