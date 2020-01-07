@@ -265,6 +265,8 @@ objects:
         value: /etc/openshift-installer/pull-secret
       - name: OPENSHIFT_INSTALL_RELEASE_IMAGE_OVERRIDE
         value: ${RELEASE_IMAGE_LATEST}
+      - name: OPENSHIFT_INSTALL_OS_IMAGE_OVERRIDE
+        value: https://art-rhcos-ci.s3.amazonaws.com/releases/rhcos-4.2-s390x/42s390x.81.20191224.0/rhcos-42s390x.81.20191224.0-qemu.qcow2
       - name: OPENSHIFT_INSTALL_INVOKER
         value: openshift-internal-ci/${JOB_NAME_SAFE}/${BUILD_ID}
       - name: USER
