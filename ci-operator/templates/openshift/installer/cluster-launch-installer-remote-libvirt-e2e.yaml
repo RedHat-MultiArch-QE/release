@@ -344,6 +344,8 @@ objects:
         platform:
           libvirt:
             URI: qemu+tcp://${REMOTE_LIBVIRT_HOSTNAME}/system
+            network:
+              if: "br${JOB_NAME_HASH}"
         pullSecret: >
           ${PULL_SECRET}
         sshKey: |
