@@ -373,7 +373,7 @@ objects:
         # While openshift-install is running...
         while kill -0 $OPENSHIFT_INSTALL 2> /dev/null; do
             sleep 10
-            LIBVIRT_NETWORK=$(virsh --connect "${REMOTE_LIBVIRT_URI}" net-list --name | grep "${NAMESPACE}-${JOB_NAME_HASH}")
+            LIBVIRT_NETWORK=$(mock-nss.sh virsh --connect "${REMOTE_LIBVIRT_URI}" net-list --name | grep "${NAMESPACE}-${JOB_NAME_HASH}")
             if [[ -n "${LIBVIRT_NETWORK}" ]]; then
                 cat > worker-hostrecords.xml << EOF
         <host ip='192.168.126.51'>
@@ -386,7 +386,7 @@ objects:
           <hostname>prometheus-k8s-openshift-monitoring.apps.${NAMESPACE}-${JOB_NAME_HASH}.${BASE_DOMAIN}</hostname>
         </host>
         EOF
-                virsh --connect "${REMOTE_LIBVIRT_URI}" net-update --network "${LIBVIRT_NETWORK}" --command add-last --section dns-host --xml "$(< worker-hostrecords.xml)"
+                mock-nss.sh virsh --connect "${REMOTE_LIBVIRT_URI}" net-update --network "${LIBVIRT_NETWORK}" --command add-last --section dns-host --xml "$(< worker-hostrecords.xml)"
                 break
             fi
         done
