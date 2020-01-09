@@ -309,6 +309,8 @@ objects:
           echo "Installing from release ${RELEASE_IMAGE_LATEST}"
         fi
 
+        openshift-install version
+
         export SSH_PUB_KEY=$(cat "${SSH_PUB_KEY_PATH}")
         export PULL_SECRET=$(cat "${PULL_SECRET_PATH}")
 
