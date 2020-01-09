@@ -365,15 +365,15 @@ objects:
 
         export TF_VAR_libvirt_master_memory=16384
         mock-nss.sh openshift-install create cluster --dir=/tmp/artifacts/installer --log-level=debug &
-        OPENSHIFT_INSTALL="$!"
+        openshift_install="$!"
 
         # If this script is killed, kill the `openshift-install`
-        trap "kill $OPENSHIFT_INSTALL 2> /dev/null" EXIT
+        trap "kill $openshift_install 2> /dev/null" EXIT
 
         # While openshift-install is running...
-        while kill -0 $OPENSHIFT_INSTALL 2> /dev/null; do
+        while kill -0 $openshift_install 2> /dev/null; do
             sleep 10
-            LIBVIRT_NETWORK=$(mock-nss.sh virsh --connect "${REMOTE_LIBVIRT_URI}" net-list --name | grep "${NAMESPACE}-${JOB_NAME_HASH}" || true)
+            libvirt_network=$(mock-nss.sh virsh --connect "${REMOTE_LIBVIRT_URI}" net-list --name | grep "${NAMESPACE}-${JOB_NAME_HASH}" || true)
             if [[ -n "${LIBVIRT_NETWORK}" ]]; then
                 cat > worker-hostrecords.xml << EOF
         <host ip='192.168.126.51'>
@@ -394,7 +394,7 @@ objects:
         # Disable the trap on a normal exit.
         trap - EXIT
 
-        wait "${OPENSHIFT_INSTALL}"
+        wait "${openshift_install}"
 
     # Performs cleanup of all created resources
     - name: teardown
