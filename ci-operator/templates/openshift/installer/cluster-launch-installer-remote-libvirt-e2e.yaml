@@ -244,7 +244,7 @@ objects:
 
     # Runs an install
     - name: setup
-      image: "quay.io/jpoulin/remote-libvirt:latest"
+      image: "quay.io/crawford/remote-libvirt:latest"
       terminationMessagePolicy: FallbackToLogsOnError
       volumeMounts:
       - name: shared-tmp
@@ -398,7 +398,7 @@ objects:
 
     # Performs cleanup of all created resources
     - name: teardown
-      image: "quay.io/jpoulin/remote-libvirt:latest"
+      image: "quay.io/crawford/remote-libvirt:latest"
       terminationMessagePolicy: FallbackToLogsOnError
       volumeMounts:
       - name: shared-tmp
