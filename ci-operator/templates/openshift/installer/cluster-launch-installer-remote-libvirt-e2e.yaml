@@ -371,7 +371,7 @@ objects:
         trap "kill $OPENSHIFT_INSTALL 2> /dev/null" EXIT
 
         # While openshift-install is running...
-        while [[ kill -0 $OPENSHIFT_INSTALL 2> /dev/null ]]; do
+        while kill -0 $OPENSHIFT_INSTALL 2> /dev/null; do
             sleep 10
             LIBVIRT_NETWORK=$(virsh --connect "${REMOTE_LIBVIRT_URI}" net-list --name | grep "${NAMESPACE}-${JOB_NAME_HASH}")
             if [[ -n "${LIBVIRT_NETWORK}" ]]; then
