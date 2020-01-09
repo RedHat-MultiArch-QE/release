@@ -376,16 +376,16 @@ objects:
             LIBVIRT_NETWORK=$(virsh --connect "${REMOTE_LIBVIRT_URI}" net-list --name | grep "${NAMESPACE}-${JOB_NAME_HASH}")
             if [[ -n "${LIBVIRT_NETWORK}" ]]; then
                 cat > worker-hostrecords.xml << EOF
-            <host ip='192.168.126.51'>
-              <hostname>alertmanager-main-openshift-monitoring.apps.${NAMESPACE}-${JOB_NAME_HASH}.${BASE_DOMAIN}</hostname>
-              <hostname>api.${NAMESPACE}-${JOB_NAME_HASH}.${BASE_DOMAIN}</hostname>
-              <hostname>console-openshift-console.apps.${NAMESPACE}-${JOB_NAME_HASH}.${BASE_DOMAIN}</hostname>
-              <hostname>downloads-openshift-console.apps.${NAMESPACE}-${JOB_NAME_HASH}.${BASE_DOMAIN}</hostname>
-              <hostname>grafana-openshift-monitoring.apps.${NAMESPACE}-${JOB_NAME_HASH}.${BASE_DOMAIN}</hostname>
-              <hostname>oauth-openshift.apps.${NAMESPACE}-${JOB_NAME_HASH}.${BASE_DOMAIN}</hostname>
-              <hostname>prometheus-k8s-openshift-monitoring.apps.${NAMESPACE}-${JOB_NAME_HASH}.${BASE_DOMAIN}</hostname>
-            </host>
-            EOF
+        <host ip='192.168.126.51'>
+          <hostname>alertmanager-main-openshift-monitoring.apps.${NAMESPACE}-${JOB_NAME_HASH}.${BASE_DOMAIN}</hostname>
+          <hostname>api.${NAMESPACE}-${JOB_NAME_HASH}.${BASE_DOMAIN}</hostname>
+          <hostname>console-openshift-console.apps.${NAMESPACE}-${JOB_NAME_HASH}.${BASE_DOMAIN}</hostname>
+          <hostname>downloads-openshift-console.apps.${NAMESPACE}-${JOB_NAME_HASH}.${BASE_DOMAIN}</hostname>
+          <hostname>grafana-openshift-monitoring.apps.${NAMESPACE}-${JOB_NAME_HASH}.${BASE_DOMAIN}</hostname>
+          <hostname>oauth-openshift.apps.${NAMESPACE}-${JOB_NAME_HASH}.${BASE_DOMAIN}</hostname>
+          <hostname>prometheus-k8s-openshift-monitoring.apps.${NAMESPACE}-${JOB_NAME_HASH}.${BASE_DOMAIN}</hostname>
+        </host>
+        EOF
                 virsh --connect "${REMOTE_LIBVIRT_URI}" net-update --network "${LIBVIRT_NETWORK}" --command add-last --section dns-host --xml "$(< worker-hostrecords.xml)"
                 break
             fi
