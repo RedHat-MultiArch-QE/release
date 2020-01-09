@@ -20,7 +20,7 @@ parameters:
   value: "openshift.testing"
 - name: BUILD_ID
   required: false
-- name: REMOTE_LIBVIRT_SVC_IP
+- name: BASTION_Z_SVC_IP
   value: 172.30.211.152
 - name: REMOTE_LIBVIRT_HOSTNAME
   value: "ocponz"
@@ -143,6 +143,7 @@ objects:
         #!/bin/bash
         set -euo pipefail
 
+        # Debugging /etc/hosts records
         cat /etc/hosts
 
         export PATH=/usr/libexec/origin:$PATH
@@ -284,6 +285,8 @@ objects:
       - name: MIRROR_BASE
         value: registry.svc.ci.openshift.org/${NAMESPACE}/release
       - name: REMOTE_LIBVIRT_URI
+        value: "qemu+tcp://${REMOTE_LIBVIRT_HOSTNAME}/system"
+      - name: BASTION_Z_SVC
         value: sshd.bastion-z.svc.cluster.local
       - name: INSTALL_INITIAL_RELEASE
       - name: RELEASE_IMAGE_INITIAL
@@ -293,9 +296,6 @@ objects:
       - |
         #!/bin/sh
         set -e
-
-        # Debugging DNS records
-        cat /etc/hosts
 
         trap 'rc=$?; if test "${rc}" -eq 0; then touch /tmp/setup-success; else touch /tmp/exit; fi; exit "${rc}"' EXIT
         trap 'CHILDREN=$(jobs -p); if test -n "${CHILDREN}"; then kill ${CHILDREN} && wait; fi' TERM
@@ -345,7 +345,7 @@ objects:
           replicas: ${workers}
         platform:
           libvirt:
-            URI: qemu+tcp://${REMOTE_LIBVIRT_HOSTNAME}/system
+            URI: "${REMOTE_LIBVIRT_URI}"
             network:
               if: "br${JOB_NAME_HASH}"
         pullSecret: >
@@ -365,7 +365,36 @@ objects:
 
         export TF_VAR_libvirt_master_memory=16384
         mock-nss.sh openshift-install create cluster --dir=/tmp/artifacts/installer --log-level=debug &
-        wait "$!"
+        OPENSHIFT_INSTALL="$!"
+
+        # If this script is killed, kill the `openshift-install`
+        trap "kill $OPENSHIFT_INSTALL 2> /dev/null" EXIT
+
+        # While openshift-install is running...
+        while [[ kill -0 $OPENSHIFT_INSTALL 2> /dev/null ]]; do
+            sleep 10
+            LIBVIRT_NETWORK=$(virsh --connect "${REMOTE_LIBVIRT_URI}" net-list --name | grep "${NAMESPACE}-${JOB_NAME_HASH}")
+            if [[ -n "${LIBVIRT_NETWORK}" ]]; then
+                cat > worker-hostrecords.xml << EOF
+            <host ip='192.168.126.51'>
+              <hostname>alertmanager-main-openshift-monitoring.apps.${NAMESPACE}-${JOB_NAME_HASH}.${BASE_DOMAIN}</hostname>
+              <hostname>api.${NAMESPACE}-${JOB_NAME_HASH}.${BASE_DOMAIN}</hostname>
+              <hostname>console-openshift-console.apps.${NAMESPACE}-${JOB_NAME_HASH}.${BASE_DOMAIN}</hostname>
+              <hostname>downloads-openshift-console.apps.${NAMESPACE}-${JOB_NAME_HASH}.${BASE_DOMAIN}</hostname>
+              <hostname>grafana-openshift-monitoring.apps.${NAMESPACE}-${JOB_NAME_HASH}.${BASE_DOMAIN}</hostname>
+              <hostname>oauth-openshift.apps.${NAMESPACE}-${JOB_NAME_HASH}.${BASE_DOMAIN}</hostname>
+              <hostname>prometheus-k8s-openshift-monitoring.apps.${NAMESPACE}-${JOB_NAME_HASH}.${BASE_DOMAIN}</hostname>
+            </host>
+            EOF
+                virsh --connect "${REMOTE_LIBVIRT_URI}" net-update --network "${LIBVIRT_NETWORK}" --command add-last --section dns-host --xml "$(< worker-hostrecords.xml)"
+                break
+            fi
+        done
+
+        # Disable the trap on a normal exit.
+        trap - EXIT
+
+        wait "${OPENSHIFT_INSTALL}"
 
     # Performs cleanup of all created resources
     - name: teardown
@@ -552,7 +581,7 @@ objects:
           sleep 60 & wait
         done
     hostAliases:
-    - ip: "${REMOTE_LIBVIRT_SVC_IP}"
+    - ip: "${BASTION_Z_SVC_IP}"
       hostnames:
       - "${REMOTE_LIBVIRT_HOSTNAME}"
       - "alertmanager-main-openshift-monitoring.apps.${NAMESPACE}-${JOB_NAME_HASH}.${BASE_DOMAIN}"
