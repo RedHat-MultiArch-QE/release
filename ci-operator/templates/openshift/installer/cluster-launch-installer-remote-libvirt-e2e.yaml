@@ -373,7 +373,7 @@ objects:
         # While openshift-install is running...
         while kill -0 $OPENSHIFT_INSTALL 2> /dev/null; do
             sleep 10
-            LIBVIRT_NETWORK=$(mock-nss.sh virsh --connect "${REMOTE_LIBVIRT_URI}" net-list --name | grep "${NAMESPACE}-${JOB_NAME_HASH}")
+            LIBVIRT_NETWORK=$(mock-nss.sh virsh --connect "${REMOTE_LIBVIRT_URI}" net-list --name | grep "${NAMESPACE}-${JOB_NAME_HASH}" || true)
             if [[ -n "${LIBVIRT_NETWORK}" ]]; then
                 cat > worker-hostrecords.xml << EOF
         <host ip='192.168.126.51'>
