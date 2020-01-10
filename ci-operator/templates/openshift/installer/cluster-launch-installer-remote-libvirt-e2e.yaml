@@ -376,7 +376,7 @@ objects:
             sleep 60
             echo "Polling libvirt for network, attempt #" + $((++i))
             libvirt_network=$(mock-nss.sh virsh --connect "${REMOTE_LIBVIRT_URI}" net-list --name | grep "${NAMESPACE}-${JOB_NAME_HASH}" || true)
-            if [[ -n "${LIBVIRT_NETWORK}" ]]; then
+            if [[ -n "${libvirt_network}" ]]; then
                 cat > /tmp/artifacts/installer/worker-hostrecords.xml << EOF
         <host ip='192.168.126.51'>
           <hostname>alertmanager-main-openshift-monitoring.apps.${NAMESPACE}-${JOB_NAME_HASH}.${BASE_DOMAIN}</hostname>
@@ -387,7 +387,7 @@ objects:
           <hostname>prometheus-k8s-openshift-monitoring.apps.${NAMESPACE}-${JOB_NAME_HASH}.${BASE_DOMAIN}</hostname>
         </host>
         EOF
-                mock-nss.sh virsh --connect "${REMOTE_LIBVIRT_URI}" net-update --network "${LIBVIRT_NETWORK}" --command add-last --section dns-host --xml "$(< /tmp/artifacts/installer/worker-hostrecords.xml)"
+                mock-nss.sh virsh --connect "${REMOTE_LIBVIRT_URI}" net-update --network "${libvirt_network}" --command add-last --section dns-host --xml "$(< /tmp/artifacts/installer/worker-hostrecords.xml)"
                 break
             fi
         done
