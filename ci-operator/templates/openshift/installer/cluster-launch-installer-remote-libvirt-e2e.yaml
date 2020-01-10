@@ -374,7 +374,7 @@ objects:
         i=0
         while kill -0 $openshift_install 2> /dev/null; do
             sleep 60
-            echo "Polling libvirt for network, attempt #" + $((++i))
+            echo "Polling libvirt for network, attempt #$((++i))"
             libvirt_network=$(mock-nss.sh virsh --connect "${REMOTE_LIBVIRT_URI}" net-list --name | grep "${NAMESPACE}-${JOB_NAME_HASH}" || true)
             if [[ -n "${libvirt_network}" ]]; then
                 cat > /tmp/artifacts/installer/worker-hostrecords.xml << EOF
