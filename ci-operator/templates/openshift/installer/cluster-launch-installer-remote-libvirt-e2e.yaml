@@ -367,9 +367,6 @@ objects:
         mock-nss.sh openshift-install create cluster --dir=/tmp/artifacts/installer --log-level=debug &
         openshift_install="$!"
 
-        # If this script is killed, kill the `openshift-install`
-        trap "kill $openshift_install 2> /dev/null" EXIT
-
         # While openshift-install is running...
         i=0
         while kill -0 $openshift_install 2> /dev/null; do
@@ -387,13 +384,11 @@ objects:
           <hostname>prometheus-k8s-openshift-monitoring.apps.${NAMESPACE}-${JOB_NAME_HASH}.${BASE_DOMAIN}</hostname>
         </host>
         EOF
+                echo "Libvirt network found. Injecting worker DNS records."
                 mock-nss.sh virsh --connect "${REMOTE_LIBVIRT_URI}" net-update --network "${libvirt_network}" --command add-last --section dns-host --xml "$(< /tmp/artifacts/installer/worker-hostrecords.xml)"
                 break
             fi
         done
-
-        # Disable the trap on a normal exit.
-        trap - EXIT
 
         wait "${openshift_install}"
 
