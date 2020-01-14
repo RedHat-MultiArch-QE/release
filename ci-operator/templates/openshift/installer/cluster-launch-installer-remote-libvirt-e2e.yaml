@@ -8,7 +8,7 @@ parameters:
   required: true
 - name: NAMESPACE
   required: true
-- name: IMAGE_NEO_LIBVIRT_INSTALLER
+- name: IMAGE_LIBVIRT_INSTALLER
   required: true
 - name: IMAGE_TESTS
   required: true
@@ -246,7 +246,7 @@ objects:
 
     # Runs an install
     - name: setup
-      image: "quay.io/jpoulin/remote-libvirt:latest"
+      image: "${IMAGE_LIBVIRT_INSTALLER}"
       terminationMessagePolicy: FallbackToLogsOnError
       volumeMounts:
       - name: shared-tmp
@@ -396,7 +396,7 @@ objects:
 
     # Performs cleanup of all created resources
     - name: teardown
-      image: "quay.io/jpoulin/remote-libvirt:latest"
+      image: "${IMAGE_LIBVIRT_INSTALLER}"
       terminationMessagePolicy: FallbackToLogsOnError
       volumeMounts:
       - name: shared-tmp
