@@ -8,6 +8,8 @@ parameters:
   required: true
 - name: NAMESPACE
   required: true
+- name: IMAGE_NEO_LIBVIRT_INSTALLER
+  required: true
 - name: IMAGE_TESTS
   required: true
 - name: ARCH
@@ -244,7 +246,7 @@ objects:
 
     # Runs an install
     - name: setup
-      image: "quay.io/jpoulin/remote-libvirt:latest"
+      image: "${IMAGE_NEO_LIBVIRT_INSTALLER}"
       terminationMessagePolicy: FallbackToLogsOnError
       volumeMounts:
       - name: shared-tmp
