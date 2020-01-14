@@ -304,7 +304,7 @@ periodics:
       - name: JOB_NAME_SAFE
         value: e2e-remote-libvirt
       - name: TEST_COMMAND
-        value: TEST_SUITE=openshift/conformance run-tests
+        value: TEST_SUITE=openshift/conformance/parallel run-tests
       image: ci-operator:latest
       imagePullPolicy: Always
       name: ""
