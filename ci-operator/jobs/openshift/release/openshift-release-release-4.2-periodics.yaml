@@ -324,7 +324,7 @@ periodics:
           - as: e2e-$(CLUSTER_TYPE)-all
             commands: $(TEST_COMMAND)
             openshift_installer:
-              cluster_profile: aws
+              cluster_profile: libvirt-s390x
       - name: JOB_NAME_SAFE
         value: e2e-remote-libvirt
       - name: TEST_COMMAND
