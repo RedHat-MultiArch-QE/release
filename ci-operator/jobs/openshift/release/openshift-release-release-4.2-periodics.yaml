@@ -292,6 +292,9 @@ periodics:
       - --input-hash=$(BUILD_ID)
       - --input-hash=$(JOB_NAME)
       - --kubeconfig=/etc/apici/kubeconfig
+      - --lease-server-password-file=/etc/boskos/password
+      - --lease-server-username=ci
+      - --lease-server=https://boskos-ci.svc.ci.openshift.org
       - --secret-dir=/usr/local/e2e-remote-libvirt-cluster-profile
       - --secret-dir=/usr/local/pull-secret
       - --target=e2e-remote-libvirt
@@ -529,6 +532,9 @@ periodics:
       - mountPath: /usr/local/e2e-remote-libvirt
         name: job-definition
         subPath: cluster-launch-installer-remote-libvirt-e2e.yaml
+      - mountPath: /etc/boskos
+        name: boskos
+        readOnly: true
       - mountPath: /etc/pull-secret
         name: pull-secret
         readOnly: true
@@ -550,6 +556,12 @@ periodics:
     - configMap:
         name: prow-job-cluster-launch-installer-remote-libvirt-e2e
       name: job-definition
+    - name: boskos
+      secret:
+        items:
+        - key: password
+          path: password
+        secretName: boskos-credentials
     - name: pull-secret
       secret:
         secretName: regcred
