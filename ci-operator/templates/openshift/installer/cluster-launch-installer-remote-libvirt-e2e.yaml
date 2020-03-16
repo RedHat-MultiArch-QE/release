@@ -160,14 +160,14 @@ objects:
           echo "[INFO] Sending heartbeats to retain the lease ${resource_name}"
         }
 
+        echo "[INFO] Acquiring a lease ..."
+        acquire_lease
+
         # Save name of the env to be used as the base domain
         cluster_env_name="$(extract_leases_info name ${lease_path})"
         cat > /tmp/shared/libvirt-lease.conf <<EOF
         BASE_DOMAIN="$cluster_env_name"
         EOF
-
-        echo "[INFO] Acquiring a lease ..."
-        acquire_lease
 
         touch /tmp/shared/leased
 
