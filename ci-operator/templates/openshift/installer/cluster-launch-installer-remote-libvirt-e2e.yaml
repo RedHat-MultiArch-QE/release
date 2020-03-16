@@ -154,6 +154,7 @@ objects:
           echo "[INFO] Lease acquired! at $(date --utc)"
           echo "[INFO] Leased resource: ${resource}"
           lease_path="/etc/openshift-installer/${resource_name}.json"
+          template_name="$(extract_leases_info template_name ${lease_path})"
           echo "[INFO] Sending heartbeats to retain the lease ${resource_name}"
           boskosctl --server-url http://boskos.ci --owner-name "${CLUSTER_NAME}" heartbeat --resource "${resource}" &
           heartbeats_pid=$!
