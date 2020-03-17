@@ -422,6 +422,19 @@ objects:
         mkdir -p ~/.ssh
         cp "${SSH_PRIV_KEY_PATH}" ~/.ssh/
 
+        # declare environments to extract subnet
+        subnets_by_domain=(
+          ["libvirt-s390x-00"]="126"
+          ["libvirt-s390x-01"]="1"
+          ["libvirt-s390x-02"]="2"
+          ["libvirt-s390x-03"]="3"
+          ["libvirt-s390x-04"]="4"
+        )
+        CLUSTER_SUBNET="${subnets_by_domain[$BASE_DOMAIN]}"
+        if [[ -z "$CLUSTER_SUBNET" ]]; then
+           CLUSTER_SUBNET=126
+        fi
+
         workers=2
         if [[ "${ARCH}" = "s390x" ]]; then
             master_type=null
