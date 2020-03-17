@@ -385,7 +385,7 @@ objects:
         #!/bin/sh
         set -e
 
-        trap 'rc=$?; if test "${rc}" -eq 0; then touch /tmp/shared/setup-success; else touch /tmp/exit; fi; exit "${rc}"' EXIT
+        trap 'rc=$?; if test "${rc}" -eq 0; then touch /tmp/shared/setup-success; else touch /tmp/shared/exit; fi; exit "${rc}"' EXIT
         trap 'CHILDREN=$(jobs -p); if test -n "${CHILDREN}"; then kill ${CHILDREN} && wait; fi' TERM
         # Wait until lease is acquired
         while true; do
@@ -423,16 +423,17 @@ objects:
         cp "${SSH_PRIV_KEY_PATH}" ~/.ssh/
 
         # declare environments to extract subnet
-        subnets_by_domain=(
-          ["libvirt-s390x-00"]="126"
-          ["libvirt-s390x-01"]="1"
-          ["libvirt-s390x-02"]="2"
-          ["libvirt-s390x-03"]="3"
-          ["libvirt-s390x-04"]="4"
-        )
-        CLUSTER_SUBNET="${subnets_by_domain[$BASE_DOMAIN]}"
-        if [[ -z "$CLUSTER_SUBNET" ]]; then
-           CLUSTER_SUBNET=126
+        declare -A SUBNETS
+        SUBNETS["libvirt-s390x-00"]="126"
+        SUBNETS["libvirt-s390x-01"]="1"
+        SUBNETS["libvirt-s390x-02"]="2"
+        SUBNETS["libvirt-s390x-03"]="3"
+        SUBNETS["libvirt-s390x-04"]="4"
+       
+        # get cluster subnet or default it to 126 
+        cluster_subnet="${SUBNETS[$BASE_DOMAIN]}"
+        if [[ -z "$cluster_subnet" ]]; then
+           cluster_subnet=126
         fi
 
         workers=2
@@ -453,7 +454,7 @@ objects:
           clusterNetwork:
           - cidr: 10.128.0.0/14
             hostPrefix: 23
-          machineCIDR: 192.168.${CLUSTER_SUBNET}.0/24
+          machineCIDR: 192.168.${cluster_subnet}.0/24
           networkType: OpenShiftSDN
           serviceNetwork:
           - 172.30.0.0/16
@@ -494,7 +495,7 @@ objects:
             libvirt_network=$(mock-nss.sh virsh --connect "${REMOTE_LIBVIRT_URI}" net-list --name | grep "${NAMESPACE}-${JOB_NAME_HASH}" || true)
             if [[ -n "${libvirt_network}" ]]; then
                 cat > /tmp/artifacts/installer/worker-hostrecords.xml << EOF
-        <host ip='192.168.${CLUSTER_SUBNET}.51'>
+        <host ip='192.168.${cluster_subnet}.51'>
           <hostname>alertmanager-main-openshift-monitoring.apps.${CLUSTER_NAME}.${BASE_DOMAIN}</hostname>
           <hostname>console-openshift-console.apps.${CLUSTER_NAME}.${BASE_DOMAIN}</hostname>
           <hostname>downloads-openshift-console.apps.${CLUSTER_NAME}.${BASE_DOMAIN}</hostname>
