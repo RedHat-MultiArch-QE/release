@@ -397,7 +397,7 @@ objects:
             echo "Lease acquired, installing..."
 
             # Retrieve lease variables
-            source /tmp/shared/libvirt-lease.conf
+            source /tmp/libvirt-lease.conf
             break
           fi
           sleep 15 & wait
