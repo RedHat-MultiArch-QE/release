@@ -667,7 +667,7 @@ objects:
       hostnames:
       - "${REMOTE_LIBVIRT_HOSTNAME}"
       - "alertmanager-main-openshift-monitoring.apps.${NAMESPACE}-${JOB_NAME_HASH}.libvirt-s390x-00"
-      - "api.${NAMESPACE}-${JOB_NAME_HASH}.libvirt-s390x-0"
+      - "api.${NAMESPACE}-${JOB_NAME_HASH}.libvirt-s390x-00"
       - "console-openshift-console.apps.${NAMESPACE}-${JOB_NAME_HASH}.libvirt-s390x-00"
       - "downloads-openshift-console.apps.${NAMESPACE}-${JOB_NAME_HASH}.libvirt-s390x-00"
       - "grafana-openshift-monitoring.apps.${NAMESPACE}-${JOB_NAME_HASH}.libvirt-s390x-00"
