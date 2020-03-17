@@ -146,10 +146,6 @@ objects:
           /app/boskos/cmd/cli/app.binary "${@}"
         }
 
-        function extract_leases_info() {
-          echo "$( jq ."${1}" --raw-output "${2}" )"
-        }
-
         function acquire_lease() {
           resource="$( boskosctl --server-url http://boskos.ci --owner-name "${CLUSTER_NAME}" acquire --type "${CLUSTER_TYPE}-quota-slice" --state "free" --target-state "leased" --timeout 150m )"
           resource_name="$(echo "${resource}"|jq .name --raw-output)"
