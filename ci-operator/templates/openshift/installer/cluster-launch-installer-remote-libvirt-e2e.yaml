@@ -153,9 +153,9 @@ objects:
         function acquire_lease() {
           resource="$( boskosctl --server-url http://boskos.ci --owner-name "${CLUSTER_NAME}" acquire --type "${CLUSTER_TYPE}-quota-slice" --state "free" --target-state "leased" --timeout 150m )"
           resource_name="$(echo "${resource}"|jq .name --raw-output)"
+
           echo "[INFO] Lease acquired! at $(date --utc)"
           echo "[INFO] Leased resource: ${resource}"
-          lease_path="/etc/openshift-installer/${resource_name}.json"
           echo "[INFO] Sending heartbeats to retain the lease ${resource_name}"
           boskosctl --server-url http://boskos.ci --owner-name "${CLUSTER_NAME}" heartbeat --resource "${resource}" &
           heartbeats_pid=$!
@@ -166,9 +166,8 @@ objects:
         acquire_lease
 
         # Save name of the env to be used as the base domain
-        cluster_env_name="$(extract_leases_info name ${lease_path})"
         cat > /tmp/shared/libvirt-lease.conf <<EOF
-        BASE_DOMAIN="$cluster_env_name"
+        BASE_DOMAIN="${resource_name}"
         EOF
 
         touch /tmp/shared/leased
