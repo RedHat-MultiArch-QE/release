@@ -15,7 +15,7 @@ parameters:
 - name: ARCH
   required: true
 - name: CLUSTER_TYPE
-  value: libvirt-s390x
+  value: remote-libvirt
 - name: TEST_COMMAND
   required: true
 - name: RELEASE_IMAGE_LATEST

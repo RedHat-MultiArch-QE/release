@@ -309,7 +309,7 @@ periodics:
       - name: ARCH
         value: s390x
       - name: CLUSTER_TYPE
-        value: remote-libvirt
+        value: libvirt-s390x
       - name: CONFIG_SPEC
         value: |
           resources:
