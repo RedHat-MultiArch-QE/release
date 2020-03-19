@@ -24,6 +24,14 @@ parameters:
   required: false
 - name: BASTION_Z_SVC_IP
   value: 172.30.211.152
+- name: BASTION_Z_SVC_1_IP
+  value: 172.30.90.239
+- name: BASTION_Z_SVC_2_IP
+  value: 172.30.142.218
+- name: BASTION_Z_SVC_3_IP
+  value: 127.30.160.230
+- name: BASTION_Z_SVC_4_IP
+  value: 172.30.145.116
 - name: REMOTE_LIBVIRT_HOSTNAME
   value: "ocponz"
 
@@ -673,6 +681,8 @@ objects:
       - "grafana-openshift-monitoring.apps.${NAMESPACE}-${JOB_NAME_HASH}.libvirt-s390x-00"
       - "oauth-openshift.apps.${NAMESPACE}-${JOB_NAME_HASH}.libvirt-s390x-00"
       - "prometheus-k8s-openshift-monitoring.apps.${NAMESPACE}-${JOB_NAME_HASH}.libvirt-s390x-00"
+    - ip: "${BASTION_Z_SVC_1_IP}"
+      hostnames:
       - "alertmanager-main-openshift-monitoring.apps.${NAMESPACE}-${JOB_NAME_HASH}.libvirt-s390x-01"
       - "api.${NAMESPACE}-${JOB_NAME_HASH}.libvirt-s390x-01"
       - "console-openshift-console.apps.${NAMESPACE}-${JOB_NAME_HASH}.libvirt-s390x-01"
@@ -680,6 +690,8 @@ objects:
       - "grafana-openshift-monitoring.apps.${NAMESPACE}-${JOB_NAME_HASH}.libvirt-s390x-01"
       - "oauth-openshift.apps.${NAMESPACE}-${JOB_NAME_HASH}.libvirt-s390x-01"
       - "prometheus-k8s-openshift-monitoring.apps.${NAMESPACE}-${JOB_NAME_HASH}.libvirt-s390x-01"
+    - ip: "${BASTION_Z_SVC_2_IP}"
+      hostnames:
       - "alertmanager-main-openshift-monitoring.apps.${NAMESPACE}-${JOB_NAME_HASH}.libvirt-s390x-02"
       - "api.${NAMESPACE}-${JOB_NAME_HASH}.libvirt-s390x-02"
       - "console-openshift-console.apps.${NAMESPACE}-${JOB_NAME_HASH}.libvirt-s390x-02"
@@ -687,6 +699,8 @@ objects:
       - "grafana-openshift-monitoring.apps.${NAMESPACE}-${JOB_NAME_HASH}.libvirt-s390x-02"
       - "oauth-openshift.apps.${NAMESPACE}-${JOB_NAME_HASH}.libvirt-s390x-02"
       - "prometheus-k8s-openshift-monitoring.apps.${NAMESPACE}-${JOB_NAME_HASH}.libvirt-s390x-02"
+    - ip: "${BASTION_Z_SVC_3_IP}"
+      hostnames:
       - "alertmanager-main-openshift-monitoring.apps.${NAMESPACE}-${JOB_NAME_HASH}.libvirt-s390x-03"
       - "api.${NAMESPACE}-${JOB_NAME_HASH}.libvirt-s390x-03"
       - "console-openshift-console.apps.${NAMESPACE}-${JOB_NAME_HASH}.libvirt-s390x-03"
@@ -694,6 +708,8 @@ objects:
       - "grafana-openshift-monitoring.apps.${NAMESPACE}-${JOB_NAME_HASH}.libvirt-s390x-03"
       - "oauth-openshift.apps.${NAMESPACE}-${JOB_NAME_HASH}.libvirt-s390x-03"
       - "prometheus-k8s-openshift-monitoring.apps.${NAMESPACE}-${JOB_NAME_HASH}.libvirt-s390x-03"
+    - ip: "${BASTION_Z_SVC_4_IP}"
+      hostnames:
       - "alertmanager-main-openshift-monitoring.apps.${NAMESPACE}-${JOB_NAME_HASH}.libvirt-s390x-04"
       - "api.${NAMESPACE}-${JOB_NAME_HASH}.libvirt-s390x-04"
       - "console-openshift-console.apps.${NAMESPACE}-${JOB_NAME_HASH}.libvirt-s390x-04"
